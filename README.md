@@ -5,7 +5,7 @@
 **Web scraping, analysis & content extraction for AI agents.**
 
 Scrape pages, crawl sites, extract UI/brand/SEO data.
-MCP server + CLI. Local-first, self-hosted.
+MCP server + CLI + HTTP API. Local-first, self-hosted.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-0D1117?style=flat-square&logo=typescript&logoColor=3178C6)
 ![License](https://img.shields.io/badge/License-MIT-0D1117?style=flat-square&logo=opensourceinitiative&logoColor=4CAF50)
@@ -28,14 +28,18 @@ NeuralScraper gives AI agents (and humans) a clean, structured way to extract da
 
 | Capability | Description |
 |---|---|
-| **Scrape** | Extract markdown, HTML, metadata, links & screenshot from any page |
+| **Scrape** | Extract markdown, HTML, metadata, links & screenshot — web pages and PDFs |
 | **Crawl** | Multi-page scraping with depth and limit control |
 | **Map** | Fast internal URL discovery across a domain |
 | **Screenshot** | Full-page PNG capture |
 | **UI Analysis** | Layout structure, components, spacing, typography |
 | **Brand Extraction** | Dominant colors, fonts, logos |
 | **SEO Audit** | Meta tags, headings, OG, schema markup, scoring |
-| **Full Analyze** | Everything above in a single command |
+| **Search** | Web search via SearXNG + auto-scrape results |
+| **Extract** | Structured data extraction with LLM (Ollama) and custom schema |
+| **Interact** | Browser automation — click, type, wait — then scrape |
+| **Batch** | Process a list of URLs from a file |
+| **Full Analyze** | Scrape + screenshot + UI + brand + SEO in one command |
 
 ---
 
@@ -102,9 +106,31 @@ Add to `~/.claude.json` or `.claude/settings.json` in your project:
 
 Restart Claude Code. The following tools will be available:
 
-`ns_scrape` · `ns_crawl` · `ns_map` · `ns_screenshot` · `ns_ui` · `ns_brand` · `ns_seo` · `ns_analyze`
+`ns_scrape` · `ns_screenshot` · `ns_crawl` · `ns_map` · `ns_ui` · `ns_brand` · `ns_seo` · `ns_analyze` · `ns_search` · `ns_extract` · `ns_interact` · `ns_batch`
 
 All tools accept a `url` (required) and `output_dir` (optional) parameter.
+
+---
+
+## HTTP API
+
+NeuralScraper also exposes a REST API when running as a server.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Server health check |
+| `POST` | `/scrape` | Scrape a page |
+| `POST` | `/screenshot` | Full-page screenshot |
+| `POST` | `/crawl` | Multi-page crawl |
+| `POST` | `/map` | URL discovery |
+| `POST` | `/ui` | UI analysis |
+| `POST` | `/brand` | Brand extraction |
+| `POST` | `/seo` | SEO audit |
+| `POST` | `/analyze` | Full analysis |
+| `POST` | `/search` | Web search + scrape |
+| `POST` | `/extract` | LLM-powered structured extraction |
+| `POST` | `/interact` | Browser automation + scrape |
+| `POST` | `/batch` | Batch URL processing |
 
 ---
 
@@ -189,7 +215,7 @@ Once connected, the tools `ns_scrape`, `ns_crawl`, `ns_map`, `ns_screenshot`, `n
 ## CLI Usage
 
 ```bash
-# Scrape a page
+# Scrape a page (web or PDF)
 ns scrape https://example.com
 
 # Take a screenshot
@@ -210,18 +236,36 @@ ns brand https://example.com
 # SEO audit
 ns seo https://example.com
 
-# Full analysis (everything at once)
+# Full analysis (scrape + screenshot + UI + brand + SEO)
 ns analyze https://example.com
+
+# Web search via SearXNG + scrape results
+ns search "best react libs" --limit 5
+
+# Structured extraction with LLM (Ollama)
+ns extract https://example.com --schema '{"price":"string","title":"string"}'
+ns extract https://example.com --prompt "Extract all product names and prices"
+
+# Browser automation (click, type, wait) + scrape
+ns interact https://example.com --actions '[{"click":".btn"},{"wait":1000}]'
+
+# Batch processing from a file
+ns batch urls.txt
 ```
 
 ### CLI Options
 
-| Option | Description |
-|---|---|
-| `-o, --output <dir>` | Custom output directory |
-| `-d, --depth <n>` | Crawl depth (default: 2) |
-| `-l, --limit <n>` | Max pages (default: 20) |
-| `--no-screenshot` | Skip screenshots |
+| Option | Commands | Default |
+|---|---|---|
+| `-o, --output <dir>` | all | `./ns-output` |
+| `-d, --depth <n>` | `crawl` | `2` |
+| `-l, --limit <n>` | `crawl`, `search` | `20` / `5` |
+| `--no-screenshot` | `scrape`, `crawl`, `batch` | — |
+| `-s, --schema <json>` | `extract` | — |
+| `-p, --prompt <text>` | `extract` | — |
+| `-a, --actions <json>` | `interact` | `[]` |
+| `--no-scrape` | `search` | — |
+| `--no-scrape-after` | `interact` | — |
 
 ---
 
@@ -322,7 +366,7 @@ NeuralScraper is a standalone tool — but it's designed to work alongside the r
 
 <div align="center">
 
-**NeuralScraper v1.0** — Cyber-Draco Legacy
+**NeuralScraper v2.0** — Cyber-Draco Legacy
 Built by [getobyte](https://github.com/getobyte)
 
 </div>
