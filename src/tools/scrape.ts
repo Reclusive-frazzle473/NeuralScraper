@@ -3,6 +3,7 @@ import { takeScreenshot } from '../browser/screenshot.js';
 import { extractMarkdown } from '../extractors/markdown.js';
 import { extractMetadata } from '../extractors/metadata.js';
 import { extractLinks } from '../extractors/links.js';
+import { extractPDF } from '../extractors/pdf.js';
 import {
   buildOutputPath,
   writeArtifact,
@@ -26,6 +27,10 @@ export interface ScrapeResult {
   artifacts: string[];
 }
 
+function isPDF(url: string): boolean {
+  return url.toLowerCase().endsWith('.pdf') || url.includes('.pdf?');
+}
+
 export async function scrape(options: ScrapeOptions): Promise<ScrapeResult> {
   const { url, screenshot: doScreenshot = true, keepBrowser = false } = options;
   const startedAt = new Date().toISOString();
@@ -33,6 +38,23 @@ export async function scrape(options: ScrapeOptions): Promise<ScrapeResult> {
 
   const outputDir = resolveOutputDir(options.outputDir);
   const outPath = buildOutputPath({ url, type: 'scrape', outputDir });
+
+  // Handle PDF files
+  if (isPDF(url)) {
+    console.log(`Detected PDF: ${url}`);
+    const pdf = await extractPDF(url);
+    artifacts.push(await writeArtifact(outPath, 'page.md', pdf.text));
+    artifacts.push(await writeJson(outPath, 'metadata.json', {
+      url, title: (pdf.info as Record<string, string>).Title || url, pages: pdf.pages, ...pdf.info,
+    }));
+    const manifest: Manifest = {
+      jobType: 'scrape', url, startedAt,
+      finishedAt: new Date().toISOString(), outputPath: outPath,
+      artifacts: ['./page.md', './metadata.json'],
+    };
+    artifacts.push(await writeManifest(outPath, manifest));
+    return { outputPath: outPath, url, title: (pdf.info as Record<string, string>).Title || 'PDF', artifacts };
+  }
 
   try {
     const { page, html } = await loadPage(url);

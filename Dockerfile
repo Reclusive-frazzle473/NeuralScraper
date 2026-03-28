@@ -14,11 +14,15 @@ RUN npm run build
 # Install only chromium for smaller image
 RUN npx playwright install chromium
 
-# Set output dir
+# Environment
 ENV NS_OUTPUT_DIR=/app/output
 ENV NS_MCP_PORT=9996
+ENV NS_SEARXNG_URL=http://host.docker.internal:8080
+ENV NS_OLLAMA_URL=http://host.docker.internal:11434
+ENV NS_OLLAMA_MODEL=qwen3:14b
 
 VOLUME ["/app/output"]
+EXPOSE 9996
 
-# Default: run MCP server
+# Run MCP server + HTTP API
 CMD ["node", "dist/mcp-server.js"]

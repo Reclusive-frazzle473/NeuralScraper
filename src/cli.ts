@@ -7,13 +7,17 @@ import { ui } from './tools/ui.js';
 import { brand } from './tools/brand.js';
 import { seo } from './tools/seo.js';
 import { analyze } from './tools/analyze.js';
+import { search } from './tools/search.js';
+import { extract } from './tools/extract.js';
+import { interact, type BrowserAction } from './tools/interact.js';
+import { batch } from './tools/batch.js';
 
 const program = new Command();
 
 program
   .name('ns')
   .description('NeuralScraper — web scraping, analysis & content extraction')
-  .version('1.0.0');
+  .version('2.0.0');
 
 program
   .command('scrape')
@@ -157,6 +161,90 @@ program
       console.log(`Title: ${result.title}`);
       console.log(`SEO Score: ${result.seoScore}/100`);
       console.log(`Artifacts: ${result.artifacts.length} files`);
+    } catch (err) {
+      console.error(`Error: ${(err as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// --- V2 Commands ---
+
+program
+  .command('search')
+  .description('Search the web via SearXNG and scrape top results')
+  .argument('<query>', 'Search query')
+  .option('-o, --output <dir>', 'Output directory', undefined)
+  .option('-l, --limit <n>', 'Max results to scrape', '5')
+  .option('--no-scrape', 'Only search, do not scrape results')
+  .action(async (query: string, opts: { output?: string; limit: string; scrape: boolean }) => {
+    try {
+      console.log(`Searching: "${query}" (limit: ${opts.limit})...`);
+      const result = await search({
+        query,
+        outputDir: opts.output,
+        limit: parseInt(opts.limit),
+        scrapeResults: opts.scrape,
+      });
+      console.log(`Done! Output: ${result.outputPath}`);
+      console.log(`Found: ${result.resultsFound}, Scraped: ${result.resultsScraped}, Errors: ${result.errors}`);
+    } catch (err) {
+      console.error(`Error: ${(err as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('extract')
+  .description('Extract structured data from a page using LLM (Ollama)')
+  .argument('<url>', 'URL to extract from')
+  .option('-o, --output <dir>', 'Output directory', undefined)
+  .option('-s, --schema <json>', 'JSON schema for extraction')
+  .option('-p, --prompt <text>', 'Natural language extraction prompt')
+  .action(async (url: string, opts: { output?: string; schema?: string; prompt?: string }) => {
+    try {
+      console.log(`Extracting from ${url}...`);
+      const result = await extract({ url, outputDir: opts.output, schema: opts.schema, prompt: opts.prompt });
+      console.log(`Done! Output: ${result.outputPath}`);
+      console.log(`Extracted data:`);
+      console.log(JSON.stringify(result.data, null, 2));
+    } catch (err) {
+      console.error(`Error: ${(err as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('interact')
+  .description('Execute browser actions on a page, then scrape')
+  .argument('<url>', 'URL to interact with')
+  .option('-o, --output <dir>', 'Output directory', undefined)
+  .option('-a, --actions <json>', 'JSON array of actions', '[]')
+  .option('--no-scrape-after', 'Skip scraping after actions')
+  .action(async (url: string, opts: { output?: string; actions: string; scrapeAfter: boolean }) => {
+    try {
+      const actions: BrowserAction[] = JSON.parse(opts.actions);
+      console.log(`Interacting with ${url} (${actions.length} actions)...`);
+      const result = await interact({ url, actions, outputDir: opts.output, scrapeAfter: opts.scrapeAfter });
+      console.log(`Done! Output: ${result.outputPath}`);
+      console.log(`Actions executed: ${result.actionsExecuted}, Artifacts: ${result.artifacts.length}`);
+    } catch (err) {
+      console.error(`Error: ${(err as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('batch')
+  .description('Scrape a list of URLs from a file')
+  .argument('<file>', 'File with URLs (one per line)')
+  .option('-o, --output <dir>', 'Output directory', undefined)
+  .option('--no-screenshot', 'Skip screenshots')
+  .action(async (file: string, opts: { output?: string; screenshot: boolean }) => {
+    try {
+      console.log(`Batch processing URLs from ${file}...`);
+      const result = await batch({ file, outputDir: opts.output, screenshot: opts.screenshot });
+      console.log(`Done! Output: ${result.outputPath}`);
+      console.log(`Total: ${result.totalUrls}, Processed: ${result.processed}, Errors: ${result.errors}`);
     } catch (err) {
       console.error(`Error: ${(err as Error).message}`);
       process.exit(1);

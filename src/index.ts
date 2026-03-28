@@ -6,3 +6,7 @@ export { ui } from './tools/ui.js';
 export { brand } from './tools/brand.js';
 export { seo } from './tools/seo.js';
 export { analyze } from './tools/analyze.js';
+export { search } from './tools/search.js';
+export { extract } from './tools/extract.js';
+export { interact } from './tools/interact.js';
+export { batch } from './tools/batch.js';

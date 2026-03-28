@@ -10,4 +10,9 @@ services:
     environment:
       - NS_OUTPUT_DIR=/app/output
       - NS_MCP_PORT=9996
+      - NS_SEARXNG_URL=http://host.docker.internal:8080
+      - NS_OLLAMA_URL=http://host.docker.internal:11434
+      - NS_OLLAMA_MODEL=qwen3:14b
       - NS_API_KEY=${NS_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
