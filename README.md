@@ -1,12 +1,11 @@
 <div align="center">
 
-# NeuralScraper v2.0
+# NeuralScraper v1.0
 
 **Web scraping, analysis & content extraction for AI agents.**
 
-Scrape pages, crawl sites, search the web, extract structured data with LLM,
-interact with browsers, analyze UI/brand/SEO. MCP server + CLI + HTTP API.
-Local-first, self-hosted. Part of the Neural* ecosystem.
+Scrape pages, crawl sites, extract UI/brand/SEO data.
+MCP server + CLI. Local-first, self-hosted.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-0D1117?style=flat-square&logo=typescript&logoColor=3178C6)
 ![License](https://img.shields.io/badge/License-MIT-0D1117?style=flat-square&logo=opensourceinitiative&logoColor=4CAF50)
@@ -16,93 +15,33 @@ Local-first, self-hosted. Part of the Neural* ecosystem.
 
 ---
 
-## Ecosystem
-
-| Component | Role |
-|-----------|------|
-| **NeuralScraper** _(you are here)_ | Web scraping & analysis MCP server + CLI + API |
-| [NeuralVaultCore](https://github.com/getobyte/NeuralVaultCore) | Persistent memory for AI agents |
-| [NeuralVaultSkill](https://github.com/getobyte/NeuralVaultSkill) | Session memory automation |
-| [NeuralVaultFlow](https://github.com/getobyte/NeuralVaultFlow) | Dev workflow orchestration |
+> **Part of the Neural\* ecosystem.**
+> NeuralScraper handles web scraping & analysis — but it doesn't work alone.
+> It pairs with **NeuralVaultCore** (persistent memory), **NeuralVaultSkill** (session automation), and **NeuralVaultFlow** (dev workflow orchestration).
+> Each component has its own repository and documentation. See the [Neural\* Ecosystem](#neural-ecosystem) section at the bottom.
 
 ---
 
-## Features
+## What It Does
 
-### Core (v1)
-- **Scrape** — markdown, HTML, metadata, links, screenshot per page
-- **Screenshot** — full-page PNG capture
-- **Crawl** — multi-page scraping with depth/limit control
-- **Map** — fast internal URL discovery
-- **UI Analysis** — layout structure, components, spacing, typography
-- **Brand Extraction** — dominant colors, fonts, logos
-- **SEO Audit** — meta tags, headings, OG, schema markup, scoring
-- **Full Analyze** — all of the above in one command
+NeuralScraper gives AI agents (and humans) a clean, structured way to extract data from the web — no fluff, no cloud dependency.
 
-### New in v2
-- **Search** — search the web via SearXNG, scrape top results
-- **Extract** — structured data extraction with LLM (Ollama)
-- **Interact** — browser actions (click, type, wait, scroll) then scrape
-- **Batch** — process a list of URLs from a file
-- **PDF Support** — scrape PDF files (URL or local path)
-- **HTTP API** — REST endpoints for all tools
-
-### Integration
-- MCP server (stdio) for Claude Code, Cursor, VS Code, OpenCode
-- HTTP API on port 9996 for any client
-- CLI tool (`ns`) for terminal use
-- Docker deployment for homelab
-
----
-
-## Ports & Docker
-
-| Service | Port | Container Name |
-|---------|------|----------------|
-| MCP Server + HTTP API | `9996` | `NeuralScraper` |
-
----
-
-## Prerequisites (homelab)
-
-NeuralScraper integrates with services you already have running:
-
-| Service | Purpose | Default URL |
-|---------|---------|-------------|
-| **SearXNG** | Web search for `ns search` | `http://host.docker.internal:8080` |
-| **Ollama** | LLM extraction for `ns extract` | `http://host.docker.internal:11434` |
-
-Both are optional — all other commands work without them.
-
-Recommended Ollama model: **`qwen3:14b`** (best at structured JSON extraction).
+| Capability | Description |
+|---|---|
+| **Scrape** | Extract markdown, HTML, metadata, links & screenshot from any page |
+| **Crawl** | Multi-page scraping with depth and limit control |
+| **Map** | Fast internal URL discovery across a domain |
+| **Screenshot** | Full-page PNG capture |
+| **UI Analysis** | Layout structure, components, spacing, typography |
+| **Brand Extraction** | Dominant colors, fonts, logos |
+| **SEO Audit** | Meta tags, headings, OG, schema markup, scoring |
+| **Full Analyze** | Everything above in a single command |
 
 ---
 
 ## Installation
 
-### Option 1 — Docker (recommended for homelab)
-
-```bash
-git clone https://github.com/getobyte/NeuralScraper.git
-cd NeuralScraper
-cp .env.example .env
-docker compose up -d
-```
-
-This starts:
-- MCP server on stdio
-- HTTP API on `http://localhost:9996`
-- Container name: `NeuralScraper`
-- Connects to Ollama and SearXNG via `host.docker.internal`
-
-Verify:
-
-```bash
-docker ps | grep NeuralScraper
-curl http://localhost:9996/health
-```
-
-### Option 2 — Local (development)
+### Option 1 — Local (recommended)
 
 ```bash
 git clone https://github.com/getobyte/NeuralScraper.git
@@ -112,13 +51,13 @@ npx playwright install chromium
 npm run build
 ```
 
-Make CLI globally available:
+Make the CLI globally available:
 
 ```bash
 npm link
 ```
 
-Start MCP server + HTTP API:
+Start the MCP server:
 
 ```bash
 node dist/mcp-server.js
@@ -126,9 +65,109 @@ node dist/mcp-server.js
 
 ---
 
+### Option 2 — Docker (homelab)
+
+```bash
+git clone https://github.com/getobyte/NeuralScraper.git
+cd NeuralScraper
+cp .env.example .env
+docker compose up -d
+```
+
+MCP server starts on port `9996` inside container `NeuralScraper`.
+
+Verify:
+
+```bash
+docker ps | grep NeuralScraper
+docker logs NeuralScraper
+```
+
+---
+
 ## Connecting to Claude Code
 
-Add to `~/.claude.json`:
+Add to `~/.claude.json` or `.claude/settings.json` in your project:
+
+```json
+{
+  "mcpServers": {
+    "neuralscraper": {
+      "command": "node",
+      "args": ["D:/path/to/NeuralScraper/dist/mcp-server.js"]
+    }
+  }
+}
+```
+
+Restart Claude Code. The following tools will be available:
+
+`ns_scrape` · `ns_crawl` · `ns_map` · `ns_screenshot` · `ns_ui` · `ns_brand` · `ns_seo` · `ns_analyze`
+
+All tools accept a `url` (required) and `output_dir` (optional) parameter.
+
+---
+
+## Using with Ollama (Local LLM)
+
+Don't want to use Claude Code? NeuralScraper's MCP server works with any MCP-compatible client — including setups powered by **Ollama** and a local model.
+
+### Step 1 — Install Ollama
+
+**Windows / macOS:**
+Download the installer from [ollama.com/download](https://ollama.com/download) and run it.
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Verify the install:
+```bash
+ollama --version
+```
+
+---
+
+### Step 2 — Pull the recommended model
+
+For MCP tool use, you need a model that supports function calling.
+These two work well with NeuralScraper:
+
+| Model | Size | When to use |
+|---|---|---|
+| `qwen2.5:14b` | ~9 GB | **Recommended** — best tool use accuracy |
+| `llama3.1:8b` | ~5 GB | Lightweight — if VRAM is limited |
+
+```bash
+# Recommended
+ollama pull qwen2.5:14b
+
+# Lightweight alternative
+ollama pull llama3.1:8b
+```
+
+Start the model:
+```bash
+ollama run qwen2.5:14b
+```
+
+> Ollama runs as a local API server on `http://localhost:11434` by default.
+> No internet required after the initial pull.
+
+---
+
+### Step 3 — Connect NeuralScraper
+
+Make sure NeuralScraper's MCP server is running (see [Installation](#installation)).
+
+Then configure your MCP-compatible client (Open WebUI, AnythingLLM, LM Studio, etc.) to point to:
+
+```
+stdio: node /path/to/NeuralScraper/dist/mcp-server.js
+```
+
+Or, if using a client that supports direct MCP config (like **OpenCode**):
 
 ```json
 {
@@ -141,123 +180,54 @@ Add to `~/.claude.json`:
 }
 ```
 
-Restart Claude Code. All `ns_*` tools will be available.
+Once connected, the tools `ns_scrape`, `ns_crawl`, `ns_map`, `ns_screenshot`, `ns_ui`, `ns_brand`, `ns_seo`, `ns_analyze` are available to your local model.
+
+> **Note:** Tool use quality depends on the model. `qwen2.5:14b` handles multi-step scrape+analyze flows reliably. Smaller models may need more explicit prompting.
 
 ---
 
 ## CLI Usage
 
-### Core commands
-
 ```bash
-ns scrape https://example.com              # Scrape page
-ns screenshot https://example.com           # Full-page screenshot
-ns crawl https://example.com --depth 2      # Crawl site
-ns map https://example.com                  # Discover URLs
-ns ui https://example.com                   # UI analysis
-ns brand https://example.com                # Brand extraction
-ns seo https://example.com                  # SEO audit
-ns analyze https://example.com              # Full analysis (all above)
+# Scrape a page
+ns scrape https://example.com
+
+# Take a screenshot
+ns screenshot https://example.com
+
+# Crawl a site
+ns crawl https://example.com --depth 2 --limit 20
+
+# Discover URLs
+ns map https://example.com
+
+# UI analysis
+ns ui https://example.com
+
+# Brand extraction
+ns brand https://example.com
+
+# SEO audit
+ns seo https://example.com
+
+# Full analysis (everything at once)
+ns analyze https://example.com
 ```
 
-### V2 commands
+### CLI Options
 
-```bash
-# Search the web and scrape results
-ns search "best react component libraries" --limit 5
-
-# Extract structured data with LLM
-ns extract https://example.com --schema '{"title": "string", "links": "array"}'
-ns extract https://example.com --prompt "find all product prices and names"
-
-# Browser actions then scrape
-ns interact https://example.com --actions '[{"click":".cookie-accept"},{"wait":1000}]'
-
-# Batch scrape from file
-ns batch urls.txt --no-screenshot
-
-# Scrape PDF
-ns scrape https://example.com/document.pdf
-```
-
-### Options
-
-| Option | Description | Commands |
-|--------|-------------|----------|
-| `-o, --output <dir>` | Custom output directory | all |
-| `-d, --depth <n>` | Crawl depth (default: 2) | crawl |
-| `-l, --limit <n>` | Max results/pages | crawl, search |
-| `--no-screenshot` | Skip screenshots | scrape, crawl, batch |
-| `-s, --schema <json>` | JSON schema for extraction | extract |
-| `-p, --prompt <text>` | Natural language prompt | extract |
-| `-a, --actions <json>` | Browser actions array | interact |
-
----
-
-## HTTP API
-
-All endpoints accept JSON body and return JSON.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/scrape` | Scrape a page |
-| `POST` | `/screenshot` | Take screenshot |
-| `POST` | `/crawl` | Crawl a site |
-| `POST` | `/map` | Discover URLs |
-| `POST` | `/ui` | UI analysis |
-| `POST` | `/brand` | Brand extraction |
-| `POST` | `/seo` | SEO audit |
-| `POST` | `/analyze` | Full analysis |
-| `POST` | `/search` | Search + scrape |
-| `POST` | `/extract` | LLM extraction |
-| `POST` | `/interact` | Browser actions |
-| `POST` | `/batch` | Batch scrape |
-
-### Examples
-
-```bash
-# Health check
-curl http://localhost:9996/health
-
-# Scrape
-curl -X POST http://localhost:9996/scrape \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com"}'
-
-# Search
-curl -X POST http://localhost:9996/search \
-  -H "Content-Type: application/json" \
-  -d '{"query": "best react libraries", "limit": 5}'
-
-# Extract
-curl -X POST http://localhost:9996/extract \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "prompt": "extract main heading and links"}'
-```
-
----
-
-## MCP Tools
-
-| Tool | Description |
-|------|-------------|
-| `ns_scrape` | Scrape a single page (web or PDF) |
-| `ns_screenshot` | Full-page screenshot |
-| `ns_crawl` | Multi-page crawl |
-| `ns_map` | URL discovery |
-| `ns_ui` | UI analysis |
-| `ns_brand` | Brand extraction |
-| `ns_seo` | SEO audit |
-| `ns_analyze` | Full analysis |
-| `ns_search` | Web search via SearXNG + scrape |
-| `ns_extract` | LLM structured extraction |
-| `ns_interact` | Browser actions + scrape |
-| `ns_batch` | Batch URL scraping |
+| Option | Description |
+|---|---|
+| `-o, --output <dir>` | Custom output directory |
+| `-d, --depth <n>` | Crawl depth (default: 2) |
+| `-l, --limit <n>` | Max pages (default: 20) |
+| `--no-screenshot` | Skip screenshots |
 
 ---
 
 ## Output Structure
+
+Single page scrape:
 
 ```
 ns-output/
@@ -271,104 +241,88 @@ ns-output/
       ui-analysis.json
       brand.json
       seo-audit.json
-      extracted.json          # extract command
       manifest.json
-  search-best-react-libs/
-    2026-03-28T14-30-00/
-      search-results.json
+```
+
+Crawl job:
+
+```
+ns-output/
+  example.com/
+    crawl-2026-03-28T14-30-00/
+      manifest.json
+      pages.json
       pages/
-        example.com/...
-  batch-2026-03-28T14-30-00/
-    batch-results.json
-    pages/
-      example.com/...
+        001-home/
+        002-about/
+        ...
 ```
-
----
-
-## Configuration
-
-Environment variables (`.env`):
-
-```env
-NS_OUTPUT_DIR=./ns-output        # Output directory
-NS_MCP_PORT=9996                 # HTTP API + MCP port
-NS_API_KEY=                      # Optional API key
-
-# SearXNG (for ns search)
-NS_SEARXNG_URL=http://host.docker.internal:8080
-
-# Ollama (for ns extract)
-NS_OLLAMA_URL=http://host.docker.internal:11434
-NS_OLLAMA_MODEL=qwen3:14b
-```
-
-For local (non-Docker) use, change `host.docker.internal` to `localhost`.
 
 ---
 
 ## Architecture
 
 ```
-NeuralScraper/
-  src/
-    browser/
-      playwright.ts          # Browser pool management
-      screenshot.ts          # Full-page screenshot
-    clients/
-      searxng.ts             # SearXNG search API client
-      ollama.ts              # Ollama LLM API client
-    extractors/
-      markdown.ts            # HTML -> Markdown
-      metadata.ts            # Meta tags, OG, Twitter
-      links.ts               # Link extraction
-      ui-analyzer.ts         # Layout, components, spacing
-      brand.ts               # Colors, fonts, logos
-      seo.ts                 # SEO audit with scoring
-      pdf.ts                 # PDF text extraction
-    storage/
-      writer.ts              # File output & manifest
-    tools/
-      scrape.ts              # Scrape (web + PDF)
-      screenshot.ts          # Screenshot standalone
-      crawl.ts               # Multi-page crawl
-      map.ts                 # URL discovery
-      ui.ts                  # UI analysis
-      brand.ts               # Brand extraction
-      seo.ts                 # SEO audit
-      analyze.ts             # All-in-one
-      search.ts              # SearXNG search + scrape
-      extract.ts             # LLM extraction
-      interact.ts            # Browser actions
-      batch.ts               # Batch URL processing
-    api.ts                   # HTTP API (Fastify)
-    cli.ts                   # CLI (commander)
-    mcp-server.ts            # MCP + API entry point
-    index.ts                 # Library exports
+src/
+  browser/
+    playwright.ts        # Browser pool management
+    screenshot.ts        # Full-page screenshot
+  extractors/
+    markdown.ts          # HTML → Markdown (readability + turndown)
+    metadata.ts          # Meta tags, OG, Twitter cards
+    links.ts             # Link extraction & classification
+    ui-analyzer.ts       # Layout, components, spacing, fonts
+    brand.ts             # Colors, fonts, logos
+    seo.ts               # SEO audit with scoring
+  storage/
+    writer.ts            # File output & manifest generation
+  tools/
+    scrape.ts
+    screenshot.ts
+    crawl.ts
+    map.ts
+    ui.ts
+    brand.ts
+    seo.ts
+    analyze.ts
+  cli.ts                 # CLI entry point (commander)
+  mcp-server.ts          # MCP server entry point (stdio)
+  index.ts               # Library exports
 ```
 
 ---
 
 ## Stack
 
-- **Runtime:** Node.js 20+
-- **Language:** TypeScript 5.8
-- **Browser:** Playwright (Chromium)
-- **HTML -> MD:** @mozilla/readability + turndown
-- **HTML parsing:** cheerio
-- **HTTP API:** Fastify
-- **PDF:** pdf-parse
-- **MCP:** @modelcontextprotocol/sdk
-- **CLI:** commander
-- **Build:** tsup
-- **LLM:** Ollama (qwen3:14b)
-- **Search:** SearXNG
+| | |
+|---|---|
+| Runtime | Node.js 20+ |
+| Language | TypeScript 5.8 |
+| Browser | Playwright (Chromium) |
+| HTML → MD | @mozilla/readability + turndown |
+| HTML parsing | cheerio |
+| MCP | @modelcontextprotocol/sdk |
+| CLI | commander |
+| Build | tsup |
+
+---
+
+## Neural\* Ecosystem
+
+NeuralScraper is a standalone tool — but it's designed to work alongside the rest of the Neural\* family. Each component lives in its own repo with its own docs.
+
+| Component | Role | Repo |
+|---|---|---|
+| **NeuralScraper** *(you are here)* | Web scraping & analysis | — |
+| **NeuralVaultCore** | Persistent memory for AI agents | [→ GitHub](https://github.com/getobyte/NeuralVaultCore) |
+| **NeuralVaultSkill** | Session memory automation | [→ GitHub](https://github.com/getobyte/NeuralVaultSkill) |
+| **NeuralVaultFlow** | Dev workflow orchestration | [→ GitHub](https://github.com/getobyte/NeuralVaultFlow) |
 
 ---
 
 <div align="center">
 
-**NeuralScraper v2.0** — Cyber-Draco Legacy
+**NeuralScraper v1.0** — Cyber-Draco Legacy
 Built by [getobyte](https://github.com/getobyte)
 
 </div>
