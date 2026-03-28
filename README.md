@@ -133,6 +133,43 @@ NeuralScraper exposes a REST API when running as a server.
 
 ---
 
+## Using with Ollama (Local LLM)
+
+NeuralScraper's `ns extract` command uses **Ollama** to run a local LLM for structured data extraction — no cloud, no API keys.
+
+### Step 1 — Install Ollama
+
+**Windows / macOS:**
+Download the installer from [ollama.com/download](https://ollama.com/download) and run it.
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Verify:
+```bash
+ollama --version
+```
+
+### Step 2 — Pull the recommended model
+
+```bash
+ollama pull qwen3:14b
+```
+
+> `qwen3:14b` — 9.3 GB, 40K context, native tool use support. Recommended for `ns extract` flows.
+
+### Step 3 — Run
+
+```bash
+ollama run qwen3:14b
+```
+
+Ollama runs as a local API server on `http://localhost:11434`. No internet required after the initial pull.
+
+---
+
 ## CLI Usage
 
 ```bash
