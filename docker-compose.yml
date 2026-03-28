@@ -1,0 +1,13 @@
+services:
+  neuralscraper:
+    build: .
+    container_name: NeuralScraper
+    restart: unless-stopped
+    ports:
+      - "9996:9996"
+    volumes:
+      - ./output:/app/output
+    environment:
+      - NS_OUTPUT_DIR=/app/output
+      - NS_MCP_PORT=9996
+      - NS_API_KEY=${NS_API_KEY:-}
