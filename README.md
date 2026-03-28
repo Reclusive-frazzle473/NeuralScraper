@@ -28,18 +28,18 @@ NeuralScraper gives AI agents (and humans) a clean, structured way to extract da
 
 | Capability | Description |
 |---|---|
-| **Scrape** | Extract markdown, HTML, metadata, links & screenshot — web pages and PDFs |
-| **Crawl** | Multi-page scraping with depth and limit control |
-| **Map** | Fast internal URL discovery across a domain |
+| **Scrape** | Scrape page — web + PDF |
 | **Screenshot** | Full-page PNG capture |
+| **Crawl** | Multi-page scraping with depth and limit control |
+| **Map** | Fast internal URL discovery |
 | **UI Analysis** | Layout structure, components, spacing, typography |
 | **Brand Extraction** | Dominant colors, fonts, logos |
 | **SEO Audit** | Meta tags, headings, OG, schema markup, scoring |
-| **Search** | Web search via SearXNG + auto-scrape results |
+| **Analyze** | Scrape + screenshot + UI + brand + SEO in one command |
+| **Search** | Web search via SearXNG + scrape results |
 | **Extract** | Structured data extraction with LLM (Ollama) and custom schema |
-| **Interact** | Browser automation — click, type, wait — then scrape |
+| **Interact** | Browser actions (click, type, wait) + scrape |
 | **Batch** | Process a list of URLs from a file |
-| **Full Analyze** | Scrape + screenshot + UI + brand + SEO in one command |
 
 ---
 
@@ -59,6 +59,7 @@ Make the CLI globally available:
 
 ```bash
 npm link
+# Now you can run: ns scrape https://example.com
 ```
 
 Start the MCP server:
@@ -104,111 +105,31 @@ Add to `~/.claude.json` or `.claude/settings.json` in your project:
 }
 ```
 
-Restart Claude Code. The following tools will be available:
+Restart Claude Code. The following **12 tools** will be available:
 
 `ns_scrape` · `ns_screenshot` · `ns_crawl` · `ns_map` · `ns_ui` · `ns_brand` · `ns_seo` · `ns_analyze` · `ns_search` · `ns_extract` · `ns_interact` · `ns_batch`
-
-All tools accept a `url` (required) and `output_dir` (optional) parameter.
 
 ---
 
 ## HTTP API
 
-NeuralScraper also exposes a REST API when running as a server.
+NeuralScraper exposes a REST API when running as a server.
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | Server health check |
-| `POST` | `/scrape` | Scrape a page |
-| `POST` | `/screenshot` | Full-page screenshot |
-| `POST` | `/crawl` | Multi-page crawl |
-| `POST` | `/map` | URL discovery |
-| `POST` | `/ui` | UI analysis |
-| `POST` | `/brand` | Brand extraction |
-| `POST` | `/seo` | SEO audit |
-| `POST` | `/analyze` | Full analysis |
-| `POST` | `/search` | Web search + scrape |
-| `POST` | `/extract` | LLM-powered structured extraction |
-| `POST` | `/interact` | Browser automation + scrape |
-| `POST` | `/batch` | Batch URL processing |
-
----
-
-## Using with Ollama (Local LLM)
-
-Don't want to use Claude Code? NeuralScraper's MCP server works with any MCP-compatible client — including setups powered by **Ollama** and a local model.
-
-### Step 1 — Install Ollama
-
-**Windows / macOS:**
-Download the installer from [ollama.com/download](https://ollama.com/download) and run it.
-
-**Linux:**
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-Verify the install:
-```bash
-ollama --version
-```
-
----
-
-### Step 2 — Pull the recommended model
-
-For MCP tool use, you need a model that supports function calling.
-These two work well with NeuralScraper:
-
-| Model | Size | When to use |
-|---|---|---|
-| `qwen2.5:14b` | ~9 GB | **Recommended** — best tool use accuracy |
-| `llama3.1:8b` | ~5 GB | Lightweight — if VRAM is limited |
-
-```bash
-# Recommended
-ollama pull qwen2.5:14b
-
-# Lightweight alternative
-ollama pull llama3.1:8b
-```
-
-Start the model:
-```bash
-ollama run qwen2.5:14b
-```
-
-> Ollama runs as a local API server on `http://localhost:11434` by default.
-> No internet required after the initial pull.
-
----
-
-### Step 3 — Connect NeuralScraper
-
-Make sure NeuralScraper's MCP server is running (see [Installation](#installation)).
-
-Then configure your MCP-compatible client (Open WebUI, AnythingLLM, LM Studio, etc.) to point to:
-
-```
-stdio: node /path/to/NeuralScraper/dist/mcp-server.js
-```
-
-Or, if using a client that supports direct MCP config (like **OpenCode**):
-
-```json
-{
-  "mcpServers": {
-    "neuralscraper": {
-      "command": "node",
-      "args": ["/path/to/NeuralScraper/dist/mcp-server.js"]
-    }
-  }
-}
-```
-
-Once connected, the tools `ns_scrape`, `ns_crawl`, `ns_map`, `ns_screenshot`, `ns_ui`, `ns_brand`, `ns_seo`, `ns_analyze` are available to your local model.
-
-> **Note:** Tool use quality depends on the model. `qwen2.5:14b` handles multi-step scrape+analyze flows reliably. Smaller models may need more explicit prompting.
+| Method | Endpoint |
+|---|---|
+| `GET` | `/health` |
+| `POST` | `/scrape` |
+| `POST` | `/screenshot` |
+| `POST` | `/crawl` |
+| `POST` | `/map` |
+| `POST` | `/ui` |
+| `POST` | `/brand` |
+| `POST` | `/seo` |
+| `POST` | `/analyze` |
+| `POST` | `/search` |
+| `POST` | `/extract` |
+| `POST` | `/interact` |
+| `POST` | `/batch` |
 
 ---
 
@@ -218,7 +139,7 @@ Once connected, the tools `ns_scrape`, `ns_crawl`, `ns_map`, `ns_screenshot`, `n
 # Scrape a page (web or PDF)
 ns scrape https://example.com
 
-# Take a screenshot
+# Full-page screenshot
 ns screenshot https://example.com
 
 # Crawl a site
@@ -243,11 +164,10 @@ ns analyze https://example.com
 ns search "best react libs" --limit 5
 
 # Structured extraction with LLM (Ollama)
-ns extract https://example.com --schema '{"price":"string","title":"string"}'
-ns extract https://example.com --prompt "Extract all product names and prices"
+ns extract https://example.com --schema '{"price":"string"}'
 
 # Browser automation (click, type, wait) + scrape
-ns interact https://example.com --actions '[{"click":".btn"},{"wait":1000}]'
+ns interact https://example.com --actions '[{"click":".btn"}]'
 
 # Batch processing from a file
 ns batch urls.txt
@@ -329,6 +249,10 @@ src/
     brand.ts
     seo.ts
     analyze.ts
+    search.ts
+    extract.ts
+    interact.ts
+    batch.ts
   cli.ts                 # CLI entry point (commander)
   mcp-server.ts          # MCP server entry point (stdio)
   index.ts               # Library exports
