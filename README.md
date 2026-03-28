@@ -1,6 +1,6 @@
 <div align="center">
 
-# NeuralScraper v1.0
+# NeuralScraper v2.0
 
 **Web scraping, analysis & content extraction for AI agents.**
 
